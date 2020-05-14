@@ -1,5 +1,7 @@
 use super::*;
 
+mod fmt_write;
+
 pub struct Writer {
     pub(crate) col: usize,
     pub(crate) color: ColorCode,
