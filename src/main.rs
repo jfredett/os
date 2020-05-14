@@ -23,7 +23,9 @@ pub extern "C" fn _start() -> ! {
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
 
-    writeln!(writer, "helloworld").unwrap();
-
-    loop {}
+    let mut i = 0;
+    loop {
+        writeln!(writer, "i = {}; i^2 = {}", i, i*i).unwrap();
+        i += 1;
+    }
 }

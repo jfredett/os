@@ -36,5 +36,23 @@ impl Writer {
         }
     }
 
-    fn new_line(&mut self) { todo!(); }
+    fn new_line(&mut self) {
+        // shift all lines up by 1
+        for row in 1..BUFF_HEIGHT {
+            for col in 0..BUFF_WIDTH {
+                let character = self.buffer.buf[row][col].read();
+                self.buffer.buf[row - 1][col].write(character);
+            }
+        }
+        self.clear_row(BUFF_HEIGHT - 1); // clear bottom row
+        self.col = 0; // carriage return
+    }
+
+    fn clear_row(&mut self, row: usize) { 
+        for col in 0..BUFF_WIDTH {
+            self.buffer.buf[row][col].write(
+                ScreenChar::new(b' ', self.color)
+            );
+        }
+    }
 }
