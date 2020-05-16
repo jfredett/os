@@ -7,15 +7,8 @@
 
 use core::panic::PanicInfo;
 
-#[cfg(test)]
-fn test_runner(tests: &[&dyn Fn()]) {
-    println!("Running {} tests", tests.len());
-    for test in tests {
-        test();
-    }
-}
-
 mod vga;
+mod qemu_exit_code;
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
@@ -23,17 +16,25 @@ fn panic(info: &PanicInfo) -> ! {
     loop {}
 }
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    if cfg!(test) {
-        #[cfg(test)]
-        test_main();
-        println!("Testing complete.");
-    } else {
-        main();
-    }
+cfg_if::cfg_if! {
+    if #[cfg(test)] {
+        mod test_runner;
+        use test_runner::test_runner;
+        use qemu_exit_code::*;
 
-    loop {}
+        #[no_mangle]
+        pub extern "C" fn _start() {
+            test_main();
+            println!("Testing complete.");
+            exit_qemu(QemuExitCode::Success);
+        }
+    } else {
+        #[no_mangle]
+        pub extern "C" fn _start() -> ! {
+            main();
+            loop {}
+        }
+    }
 }
 
 pub fn main() {
