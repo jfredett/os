@@ -6,3 +6,4 @@ impl fmt::Write for Writer {
         Ok(())
     }
 }
+
