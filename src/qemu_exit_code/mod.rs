@@ -1,3 +1,4 @@
+#![cfg(test)]
 use x86_64::instructions::port::Port;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

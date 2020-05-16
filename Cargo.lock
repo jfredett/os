@@ -41,8 +41,9 @@ dependencies = [
  "cfg-if",
  "lazy_static",
  "spin",
+ "uart_16550",
  "volatile",
- "x86_64",
+ "x86_64 0.9.6",
 ]
 
 [[package]]
@@ -50,6 +51,16 @@ name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
+
+[[package]]
+name = "uart_16550"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b5e5e7b79b55e1aa57b0ab994490d876d9c2f5b18c7716628155207e0e4b197"
+dependencies = [
+ "bitflags",
+ "x86_64 0.10.3",
+]
 
 [[package]]
 name = "volatile"
@@ -62,6 +73,16 @@ name = "x86_64"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4206b60c9f99766329b66962aa8ddc01df6c7edd02edc046b7a69d5df9fcdbcf"
+dependencies = [
+ "bit_field",
+ "bitflags",
+]
+
+[[package]]
+name = "x86_64"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df453cbef6f9a3f703c1866338da79ae8e98a86f7ccd90bca92e6f1583720941"
 dependencies = [
  "bit_field",
  "bitflags",

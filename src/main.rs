@@ -9,10 +9,19 @@ use core::panic::PanicInfo;
 
 mod vga;
 mod qemu_exit_code;
+mod serial;
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
+    cfg_if::cfg_if! {
+        if #[cfg(test)] {
+            serial_println!("[failed]\n");
+            serial_println!("{}", info);
+            exit_qemu(QemuExitCode::Failure);
+        } else {
+            println!("{}", info);
+        }
+    }
     loop {}
 }
 

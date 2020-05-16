@@ -12,11 +12,14 @@ impl ColorCode {
 
 #[cfg(test)]
 mod test {
+    use crate::*;
     use super::*;
 
     #[test_case]
     fn new_creates_color_correctly() {
+        serial_print!("Color Codes correctly generate: ");
         let c = ColorCode::new(Color::Green, Color::Black);
         assert_eq!(c, ColorCode(2));
+        serial_println!("[ok]");
     }
 }

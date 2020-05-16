@@ -11,4 +11,8 @@ impl ScreenChar {
     pub fn new(character: u8, color: ColorCode) -> ScreenChar {
         ScreenChar { character, color }
     }
+
+    pub fn character(&self) -> u8 {
+        self.character
+    }
 }

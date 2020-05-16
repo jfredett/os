@@ -42,3 +42,36 @@ pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
 }
+
+#[cfg(test)]
+mod test {
+    use crate::*;
+    use super::*;
+
+    #[test_case]
+    fn println_does_not_panic() {
+        serial_print!("println! doesn't panic: ");
+        println!("test content, please ignore.");
+        serial_println!("[ok]");
+    }
+
+    #[test_case]
+    fn println_does_not_panic_with_lots_of_output() {
+        serial_print!("println! doesn't panic (large output): ");
+        for _ in 0..2000 {
+            println!("test content, please ignore.");
+        }
+        serial_println!("[ok]");
+    }
+
+    #[test_case]
+    fn println_actually_prints() {
+        serial_print!("println! prints content to vga buffer correctly: ");
+        let s = "test content, please ignore.";
+        for (idx, chr) in s.chars().enumerate() {
+            let screen_char = WRITER.lock().buffer.buf[BUFF_HEIGHT -2][idx].read();
+            assert_eq!(char::from(screen_char.character()), chr);
+        }
+        serial_println!("[ok]");
+    }
+}
