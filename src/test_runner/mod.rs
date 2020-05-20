@@ -1,7 +1,8 @@
 use super::*;
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
-    serial_println!("Running {} tests", tests.len());
+    // padding to account for showing the file
+    serial_println!("        {} tests", tests.len());
     for test in tests {
         test();
     }
