@@ -1,55 +1,38 @@
-#![feature(asm, custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
-#![reexport_test_harness_main = "test_main"]
-
 #![no_std]
 #![no_main]
+#![feature(asm, custom_test_frameworks)]
+#![test_runner(os::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
-use core::panic::PanicInfo;
-
-mod vga;
-mod qemu_exit_code;
-mod serial;
-
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    cfg_if::cfg_if! {
-        if #[cfg(test)] {
-            serial_println!("[failed]\n");
-            serial_println!("{}", info);
-            exit_qemu(QemuExitCode::Failure);
-        } else {
-            println!("{}", info);
-        }
-    }
-    loop {}
-}
+use os::*;
 
 cfg_if::cfg_if! {
     if #[cfg(test)] {
-        mod test_runner;
-        use test_runner::test_runner;
-        use qemu_exit_code::*;
-
         #[no_mangle]
-        pub extern "C" fn _start() {
+        pub extern "C" fn _start() -> ! {
+            serial_println!("Running main.rs unit tests.");
             test_main();
-            println!("Testing complete.");
-            exit_qemu(QemuExitCode::Success);
+            loop {}
+        }
+
+        #[panic_handler]
+        fn panic(info: &PanicInfo) -> ! {
+            test_panic_handler(info)
         }
     } else {
         #[no_mangle]
         pub extern "C" fn _start() -> ! {
-            main();
+            let mut i = 0;
+            loop {
+                println!("i = {}; i^3 = {}", i, i*i*i);
+                i += 1;
+            }
+        }
+
+        #[panic_handler]
+        fn panic(info: &PanicInfo) -> ! {
+            println!("{}", info);
             loop {}
         }
-    }
-}
-
-pub fn main() {
-    let mut i = 0;
-    loop {
-        println!("i = {}; i^3 = {}", i, i*i*i);
-        i += 1;
     }
 }
