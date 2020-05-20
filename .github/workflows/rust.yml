@@ -1,0 +1,30 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: x86_64 Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          target: x86-64-os
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          uses-cross: true
+          command: build
+          args: --target x86-64-os
+      - uses: actions-rs/cargo@v1
+        with:
+          uses-cross: true
+          command: test
+          args: --target x86-64-os
+        
