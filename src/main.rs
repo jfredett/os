@@ -22,11 +22,13 @@ cfg_if::cfg_if! {
     } else {
         #[no_mangle]
         pub extern "C" fn _start() -> ! {
-            let mut i = 0;
-            loop {
-                println!("i = {}; i^3 = {}", i, i*i*i);
-                i += 1;
-            }
+            println!("Starting OS");
+            os::init();
+
+            x86_64::instructions::interrupts::int3();
+
+            println!("Interrupt works");
+            loop {}
         }
 
         #[panic_handler]
