@@ -25,7 +25,7 @@ cfg_if::cfg_if! {
             println!("Starting OS");
             os::init();
 
-            x86_64::instructions::interrupts::int3();
+            unsafe { *(0xdeadc0de as *mut u64) = 42; };
 
             println!("Interrupt works");
             loop {}
