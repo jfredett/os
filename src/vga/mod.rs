@@ -71,11 +71,22 @@ mod test {
     #[test_case]
     fn println_actually_prints() {
         serial_print!("println! prints content to vga buffer correctly: ");
+
+        use core::fmt::Write;
+        use x86_64::instructions::interrupts::without_interrupts;
+
         let s = "test content, please ignore.";
-        for (idx, chr) in s.chars().enumerate() {
-            let screen_char = WRITER.lock().buffer.buf[BUFF_HEIGHT -2][idx].read();
-            assert_eq!(char::from(screen_char.character()), chr);
-        }
+        without_interrupts(|| {
+            let mut writer = WRITER.lock();
+
+            writeln!(writer, "\n{}", s).expect("writeln failed");
+
+            for (idx, chr) in s.chars().enumerate() {
+                let screen_char = writer.buffer.buf[BUFF_HEIGHT - 2][idx].read();
+                assert_eq!(char::from(screen_char.character()), chr);
+            }
+        });
+
         serial_println!("[ok]");
     }
 }
