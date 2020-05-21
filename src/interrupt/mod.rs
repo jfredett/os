@@ -1,13 +1,16 @@
 mod breakpoint;
 mod double_fault;
-mod index;
+mod interrupt_index;
+mod timer;
 
 use super::*;
+use interrupt_index::InterruptIndex;
 
 pub use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use lazy_static::lazy_static;
 use pic8259_simple::ChainedPics;
 use spin;
+
 
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
@@ -24,6 +27,9 @@ lazy_static! {
                .set_handler_fn(double_fault::handler)
                .set_stack_index(gdt::DOUBLE_FAULT_STACK_INDEX);
         }
+
+        idt[InterruptIndex::Timer.as_usize()]
+            .set_handler_fn(timer::handler);
 
         idt
     };
