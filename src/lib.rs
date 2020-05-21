@@ -32,6 +32,8 @@ pub extern "C" fn _start() -> ! {
 pub fn init() {
     gdt::init();
     interrupt::init_idt();
+    unsafe { interrupt::PICS.lock().initialize() };
+    x86_64::instructions::interrupts::enable();
 }
 
 #[cfg(test)]
