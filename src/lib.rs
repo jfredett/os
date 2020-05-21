@@ -11,6 +11,7 @@ pub mod serial;
 pub mod test_runner;
 pub mod qemu_exit_code;
 pub mod interrupt;
+pub mod gdt;
 
 pub use vga::*;
 pub use serial::*;
@@ -29,6 +30,7 @@ pub extern "C" fn _start() -> ! {
 }
 
 pub fn init() {
+    gdt::init();
     interrupt::init_idt();
 }
 
