@@ -12,7 +12,7 @@ cfg_if::cfg_if! {
         pub extern "C" fn _start() -> ! {
             serial_println!("Running main.rs unit tests.");
             test_main();
-            loop {}
+            os::hlt_loop();
         }
 
         #[panic_handler]
@@ -27,13 +27,13 @@ cfg_if::cfg_if! {
             os::init();
             println!("done.");
 
-            loop {}
+            os::hlt_loop();
         }
 
         #[panic_handler]
         fn panic(info: &PanicInfo) -> ! {
             println!("{}", info);
-            loop {}
+            os::hlt_loop();
         }
     }
 }

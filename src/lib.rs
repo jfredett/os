@@ -26,7 +26,7 @@ pub extern "C" fn _start() -> ! {
     serial_println!("Running lib.rs unit tests.");
     init();
     test_main();
-    loop {}
+    hlt_loop();
 }
 
 pub fn init() {
@@ -40,4 +40,8 @@ pub fn init() {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     test_panic_handler(info)
+}
+
+pub fn hlt_loop() -> ! {
+    loop { x86_64::instructions::hlt(); }
 }
