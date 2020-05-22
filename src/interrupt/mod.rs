@@ -2,6 +2,7 @@ mod breakpoint;
 mod double_fault;
 mod interrupt_index;
 mod timer;
+mod keyboard;
 
 use super::*;
 use interrupt_index::InterruptIndex;
@@ -30,6 +31,8 @@ lazy_static! {
 
         idt[InterruptIndex::Timer.as_usize()]
             .set_handler_fn(timer::handler);
+        idt[InterruptIndex::Keyboard.as_usize()]
+            .set_handler_fn(keyboard::handler);
 
         idt
     };
@@ -43,4 +46,8 @@ pub static PICS: spin::Mutex<ChainedPics> = spin::Mutex::new(
 
 pub fn init_idt() {
     IDT.load();
+}
+
+pub fn end_interrupt(idx: InterruptIndex) {
+    unsafe { PICS.lock().notify_end_of_interrupt(idx.as_u8()); }
 }
